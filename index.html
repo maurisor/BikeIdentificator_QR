@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+        <meta name="format-detection" content="telephone=no" />
+        <meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width, height=device-height, target-densitydpi=device-dpi" />
+        <link rel="stylesheet" type="text/css" href="style.css" />
+        <title>BikeIdentificator QR</title>
+    </head>
+    <body>
+        
+		<div class="bikeid">
+		<a onclick="app.scan()">	
+		<div style="text-align:center;height:60px;position:fixed;top:0px;left:0px;right:0px;padding:10px" >								
+			<img src="logo.jpg" class="icon"  style="float:left;height:50px;width:50px"> 			
+			<img src="scatta.png" class="icon redbox" style="float:right;height:50px;width:50px">			
+			<h1>BikeIdentificator</h1>
+		 </div>
+		 </a>
+		  <div id="content" style="text-align:center;width:100%;height:90%;overflow-y:scroll;position:fixed;top:53px;left:0px;right:0px" class="content">
+		   <a onclick="app.scan()">
+		   <br>		  
+			fai TAP sul logo per leggere il tag BikeIdentificator
+		  <br>		  
+		  <img src="qrbikeidentificator.png"> 
+		   <br>
+		  	 do TAP on the logo to read the tag BikeIdentificator		
+		  </a>
+		  </div>
+		 </div>
+        	
+        <script type="text/javascript" src="cordova.js"></script>
+        <script type="text/javascript" src="barcodescanner.js"></script>
+        <script type="text/javascript" src="index.js"></script>
+        <script type="text/javascript">
+            app.initialize();
+        </script>
+    </body>
+</html>

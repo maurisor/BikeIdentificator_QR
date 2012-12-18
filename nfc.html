@@ -1,0 +1,116 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+<meta http-equiv="Content-Language" content="it">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no" /> 
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<title>BIKE Identificator</title>
+<link rel="stylesheet" href="img/style.css" type="text/css" media="screen" title="no title" charset="utf-8">
+<script type="text/javascript" charset="utf-8" src="img/cordova-2.0.0.js"></script>
+<script type="text/javascript" charset="utf-8" src="img/phonegap-nfc-0.4.1.js"></script>
+</head>
+<script>
+
+var ptag="";
+var xtag="";
+var httpReq = new XMLHttpRequest();
+var latlon = "";
+
+
+function suc_geo(p) 
+{
+	latlon = "&lon="+p.coords.longitude+"&lat="+p.coords.latitude;
+	if ( xtag != "" )
+	{ 
+	ptag = "nfc="+xtag+latlon;
+	getRemoteData("http://bike.bikeidentificator.com/bike.asp","POST",ptag,"","");
+	}
+}
+function err_geo() 
+{
+}
+
+function handleStateChange() {
+	if (httpReq.readyState != 4)
+		return;
+}
+
+
+
+function getRemoteData(url,metod,data,fnsuccess,fnfail) {
+	try {
+
+		httpReq.onreadystatechange = handleStateChange;	
+		httpReq.open(metod, url, false);
+		httpReq.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+		httpReq.send(data);
+		if (httpReq.readyState == 4 && httpReq.status == 200) {			
+			if ( fnsuccess != null)	eval(fnsuccess+'(httpReq.responseText)') ;				
+			return null;
+		} else {
+			if ( fnfail != null)  eval(fnfail+'()') 			
+			return null;			
+		}
+	} catch (ex) {
+		 eval(fnfail+'("errore di connessione:'+ex.message+'")') 
+		return null;
+	}
+
+}
+
+function error_bike(e) { 
+	document.getElementById('messaggi').innerHTML=document.getElementById('messaggi').innerHTML+  'Non riusciamo ad attivare la connessione dati, controlla di avere copertura telefonica e di essere abilitato alla navigazione. '+e;
+}
+
+function success_bike(rdata) {		
+	document.getElementById('content').innerHTML= rdata;
+}
+
+
+
+function ready() {
+
+	
+    function onNfc(nfcEvent) {
+
+        var tag = nfcEvent.tag;
+        xtag = nfc.bytesToHexString(tag.id);
+        ptag = "nfc="+xtag+latlon;
+   		document.getElementById('messaggi').innerHTML = "";
+   		document.getElementById('content').innerHTML = "";
+		navigator.notification.vibrate(200);
+		getRemoteData("https://riservata.bikeidentificator.com/bike.asp","POST",ptag,"success_bike","error_bike");
+   	
+    }
+
+    function win() {
+        document.getElementById('messaggi').innerHTML = "Appoggia il cellulare sul tag";
+    }
+
+    function fail(error) {
+        document.getElementById('messaggi').innerHTML = "Errore in lettura NFC: "+error.message;
+    }
+
+	navigator.geolocation.getCurrentPosition(suc_geo, err_geo);
+    nfc.addTagDiscoveredListener(onNfc, win, fail);
+}
+
+
+function init() {
+
+  	document.addEventListener('deviceready', ready, false);
+ //  ready();
+}
+
+
+</script>
+<body onload="init()" >
+<div class="bikeid">
+  <h1>BIKE <small>IDENTIFICATOR</small></h1>
+  <div id="messaggi"></div>
+  <div id="content" style="text-align:center" class="content">
+  <img src="logo.jpg" width="204" height="204"> 
+  </div>
+ </div>
+</body>
+</html>
